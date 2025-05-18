@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -17,7 +18,8 @@ export default function SchedulePage() {
   const [sessionDetails, setSessionDetails] = useState('');
 
   useEffect(() => {
-    const selectedTime = searchParams.get('time');
+    const selectedTime = searchParams?.get('time');
+    console.log('selectedTime:', selectedTime); // Debug
     if (selectedTime) {
       setSessionTime(selectedTime);
     }
