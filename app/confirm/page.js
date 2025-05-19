@@ -1,29 +1,43 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FiChevronLeft } from 'react-icons/fi';
 import { FaUserCircle } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+function SearchParamsWrapper({ setSessionTime }) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const selectedTime = searchParams?.get('time');
+    if (selectedTime) {
+      setSessionTime(selectedTime);
+    }
+  }, [searchParams, setSessionTime]);
+
+  return null;
+}
+
 export default function SchedulePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [sessionMode, setSessionMode] = useState('In-Person');
   const [sessionDate, setSessionDate] = useState('');
   const [sessionTime, setSessionTime] = useState('');
   const [sessionDetails, setSessionDetails] = useState('');
 
-  useEffect(() => {
-    const selectedTime = searchParams?.get('time');
-    console.log('selectedTime:', selectedTime); // Debug
-    if (selectedTime) {
-      setSessionTime(selectedTime);
-    }
-  }, [searchParams]);
+  const [patient] = useState({
+    name: 'Shubham Naik',
+    phone: '+91 98765 43210',
+  });
+
+  const [practitioner] = useState({
+    name: 'Saria Dilon',
+    phone: '+91 98765 43210',
+  });
 
   const handleConfirm = () => {
     if (sessionTime && sessionDate) {
@@ -39,16 +53,6 @@ export default function SchedulePage() {
     }
   };
 
-  const [patient] = useState({
-    name: 'Shubham Naik',
-    phone: '+91 98765 43210',
-  });
-
-  const [practitioner] = useState({
-    name: 'Saria Dilon',
-    phone: '+91 98765 43210',
-  });
-
   return (
     <div
       className="min-h-screen  md:px-8 flex flex-col items-center relative"
@@ -57,6 +61,10 @@ export default function SchedulePage() {
       }}
     >
       <ToastContainer />
+
+      <Suspense fallback={null}>
+        <SearchParamsWrapper setSessionTime={setSessionTime} />
+      </Suspense>
 
       <div className="w-full p-6">
         <div className="flex items-center space-x-2 mb-4">
